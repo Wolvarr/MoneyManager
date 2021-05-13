@@ -32,7 +32,8 @@ fun main() {
         routing {
             route("/expenses") {
                 get {
-                    call.respond(mapOf("products" to dao.getAllExpenses()))
+                    val filter = call.receive<ExpensesFilter>()
+                    call.respond(mapOf("products" to dao.getAllExpenses(filter)))
                 }
                 post {
                     val expense = call.receive<CreateExpenseDto>()

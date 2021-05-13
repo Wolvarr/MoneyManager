@@ -53,8 +53,39 @@ class ExpenseDao(val db: Database) : DAOInterface {
         deleteExpense(id2)
     }
 
-    override fun getAllExpenses() = transaction(db) {
-      TODO("Not yet implemented")
+    override fun getAllExpenses(filter: ExpensesFilter) = transaction(db) {
+       val expenseList =  Expenses.selectAll().map {
+            GetExpenseViewModel(
+                it[Expenses.name], it[Expenses.amount], it[Expenses.date]
+            )
+        }.filter { it.name.contains(filter.name) }
+
+        //I know this would be bad in performance, but I didn't find (an easy and nice) solution to add the filtering to the SQL query
+        //and decide if the filter properties are not null at the same time.
+        //I think this way at least the name filter would be in the query (I'm not sure tho),
+        // but I had to make it auto initialized to "" make this work
+
+        if(filter.minAmount != null)
+        {
+            expenseList.filter { it.amount > filter.minAmount }
+        }
+
+        if(filter.maxAmount != null)
+        {
+            expenseList.filter { it.amount < filter.maxAmount }
+        }
+
+        if(filter.beforeDate != null)
+        {
+            expenseList.filter { it.date < filter.beforeDate }
+        }
+
+        if(filter.afterDate != null)
+        {
+            expenseList.filter { it.date > filter.afterDate }
+        }
+
+        expenseList
     }
 
     override fun close() {}
@@ -68,5 +99,5 @@ interface DAOInterface : Closeable {
     fun getExpense(id: Int): GetExpenseViewModel?
     fun sumExpenses(id1: Int, id2: Int)
     //TODO filterek
-    fun getAllExpenses(): List<GetExpenseViewModel>
+    fun getAllExpenses(filter: ExpensesFilter): List<GetExpenseViewModel>
 }
