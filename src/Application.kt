@@ -1,6 +1,6 @@
 package hu.bme
 
-import hu.bme.Model.Expense
+import hu.bme.model.Expense
 import hu.bme.dal.ExpenseDao
 import hu.bme.dto.CreateExpenseDto
 import hu.bme.dto.ExpensesFilter
@@ -60,6 +60,12 @@ fun main() {
                             call.respond(response)
                         else call.respond("No such expense found!")
                     }
+                }
+                put {
+                    val id1 = call.parameters["id"]
+                    val id2 = call.parameters["id2"]
+                    dao.sumExpenses(id1?.toInt(), id2?.toInt())
+                    call.respond(HttpStatusCode.OK)
                 }
             }
         }

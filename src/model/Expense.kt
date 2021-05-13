@@ -1,4 +1,4 @@
-package hu.bme.Model
+package hu.bme.model
 
 import org.joda.time.DateTime
 
