@@ -47,14 +47,13 @@ class ExpenseDao(val db: Database) : DAOInterface {
             )}.singleOrNull()
     }
 
-    override fun sumExpenses(id1: Int?, id2: Int?) = transaction(db){
-        if(id1 == null || id2 == null)
-        {
-            throw Exception("Cnnot merge because one or both given id-s are null")
-        }
-
+    override fun sumExpenses(id1: Int, id2: Int) = transaction(db){
         val expense1 = getExpense(id1)
         val expense2 = getExpense(id2)
+        if(expense1 == null || expense2 == null)
+        {
+            throw Exception("The expenseses with the given ids were not found!")
+        }
         updateExpense(id1, expense1?.name as String, (expense1.amount + expense2?.amount as Int), expense1.date)
         deleteExpense(id2)
     }
@@ -103,7 +102,7 @@ interface DAOInterface : Closeable {
     fun updateExpense(id: Int, name: String, amount: Int, date: DateTime)
     fun deleteExpense(id: Int)
     fun getExpense(id: Int): GetExpenseViewModel?
-    fun sumExpenses(id1: Int?, id2: Int?)
+    fun sumExpenses(id1: Int, id2: Int)
     //TODO filterek
     fun getAllExpenses(filter: ExpensesFilter): List<GetExpenseViewModel>
 }

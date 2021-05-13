@@ -61,10 +61,16 @@ fun main() {
                         else call.respond("No such expense found!")
                     }
                 }
-                put {
+                put( "/merge") {
                     val id1 = call.parameters["id"]
                     val id2 = call.parameters["id2"]
-                    dao.sumExpenses(id1?.toInt(), id2?.toInt())
+                    if(id1 == null || id2 == null)
+                    {
+                        call.respond(HttpStatusCode.BadRequest)
+                    }
+                    else {
+                        dao.sumExpenses(id1.toInt(), id2.toInt())
+                    }
                     call.respond(HttpStatusCode.OK)
                 }
             }
