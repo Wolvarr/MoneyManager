@@ -9,4 +9,5 @@ data class ExpensesFilter(
     val minAmount: Double?,
     val beforeDate: DateTime?,
     val afterDate: DateTime?
+    val asdasd : DateTime?
 )
